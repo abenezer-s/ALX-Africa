@@ -3,7 +3,7 @@
 
 principal = 1000    # amount expressed in dollars    
 rate = 0.05         # 5% interest rate
-time = 3            # time expressed in years        
+time= 3            # time expressed in years        
 
 interest = principal * rate * time
 
