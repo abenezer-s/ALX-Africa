@@ -9,6 +9,6 @@ savings = income - expenses
 projected_savings = savings * 12 + (savings * 12 * 0.05)
 
 # Display the user’s monthly savings and  the projected annual savings
-print("Your monthly savings are ${}.".format(savings))
-print("Projected savings after one year, with interest, is: ${}.".format(projected_savings))
+print("Your monthly savings are ${}".format(savings))
+print("Projected savings after one year, with interest, is: ${}".format(projected_savings))
 
