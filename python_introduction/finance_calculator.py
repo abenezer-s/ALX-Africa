@@ -6,7 +6,7 @@ expenses = int(input("Enter your monthly expenses: "))
 
 # Calculate Monthly Savings and annual savings
 savings = income - expenses
-projected_savings = int(savings * 12 + (savings * 12 * 0.05))
+projected_savings = savings * 12 + (savings * 12 * 0.05)
 
 # Display the user’s monthly savings and  the projected annual savings
 print("Your monthly savings are ${}.".format(savings))
