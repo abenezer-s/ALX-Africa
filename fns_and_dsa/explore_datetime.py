@@ -13,7 +13,3 @@ def calculate_future_date():
     future_date = current_date + timedelta(days=num_days)
     print("Future date: ", future_date.strftime('%Y-%m-%d'))
     
-
-
-display_current_datetime()
-calculate_future_date()
