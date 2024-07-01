@@ -5,10 +5,10 @@ monthly_income = int(input("Enter your monthly income: "))
 monthly_expenses = int(input("Enter your monthly expenses: "))
 
 # Calculate Monthly Savings and annual savings
-Monthly_Savings = monthly_income - monthly_expenses
-Projected_Savings = Monthly_Savings * 12 + (Monthly_Savings * 12 * 0.05)
+monthly_savings = monthly_income - monthly_expenses
+projected_savings = Monthly_Savings * 12 + (Monthly_Savings * 12 * 0.05)
 
 # Display the user’s monthly savings and  the projected annual savings
-print("Your monthly savings are ${}".format(Monthly_Savings))
-print("Projected savings after one year, with interest, is: ${}.".format(Projected_Savings))
+print("Your monthly savings are ${}".format(monthly_savings))
+print("Projected savings after one year, with interest, is: ${}.".format(projected_savings))
 
