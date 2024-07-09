@@ -12,5 +12,5 @@ def safe_divide(numerator, denominator):
             return msg
         
     except ValueError:
-      msg = "Please enter numeric values only."
+      msg = "Error: Please enter numeric values only."
       return msg
