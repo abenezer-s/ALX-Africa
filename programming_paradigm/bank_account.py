@@ -21,5 +21,6 @@ class BankAccount:
             return False   
         
     def display_balance(self):
-        return print(f"Current Balance: ${float(self.account_balance)}")
+        val = float(self.account_balance)
+        print(f"Current Balance: ${val:.2f}")
     
