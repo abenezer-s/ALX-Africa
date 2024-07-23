@@ -6,7 +6,7 @@ try:
         passwd = 'password',
         collation = 'utf8mb4_general_ci'
     )
-except:
+except mysql.connector.Error:
     raise Exception("could not connect to DB")
 
 cursor = mydb.cursor()
