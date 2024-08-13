@@ -33,18 +33,32 @@ def login_view(request):
     
     return render(request, "relationship_app/login.html")
 
+def register(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password1')
+            user = authenticate(username=username, password=password)
+            login(request, user)
+            return redirect('login')
+    else:
+        form = UserCreationForm()
+    return render(request, 'relationship_app/register.html', {'form': form})
+
 class LibraryDetailView(DetailView):
     model =Library
     template_name = 'relationship_app/library_detail.html'
 
 
-class SignUpView(CreateView):
-    form_class = UserCreationForm
-    success_url = reverse_lazy('login')
-    template_name = 'relationship_app/registration.html'
-
-
-
-class LibraryLogoutView(LogoutView):
-    next_page = 'relationship_app/login'  
+#class SignUpView(CreateView):
+#    form_class = UserCreationForm
+#    success_url = reverse_lazy('login')
+#    template_name = 'relationship_app/registration.html'
+#
+#
+#
+#class LibraryLogoutView(LogoutView):
+#    next_page = 'relationship_app/login'  
 
