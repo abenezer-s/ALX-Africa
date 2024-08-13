@@ -10,8 +10,8 @@ def book_view(request):
         'books' : qs
     }
 
-    return render(request, 'list_books.html',context)
+    return render(request, 'relationship_app/list_books.html',context)
 
 class Books_view(DetailView):
 
-    template_name = library_detail.html
+    template_name = 'relationship_app/library_detail.html'
