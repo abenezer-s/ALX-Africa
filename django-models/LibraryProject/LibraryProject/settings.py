@@ -52,11 +52,11 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'LibraryProject.urls'
-
+temp_path = '/home/abe/Documents/2024/core/ALX-backend/Alx_DjangoLearnLab/django-models/LibraryProject/templates'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [temp_path],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
