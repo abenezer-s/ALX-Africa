@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import permission_required
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import user_passes_test
@@ -5,7 +6,7 @@ from django.http import HttpResponse
 from django.views.generic import CreateView
 from django.urls import reverse_lazy
 from django.views.generic.detail import DetailView
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect,  get_object_or_404
 from .models import Book
 from .models import Library
 
@@ -59,6 +60,16 @@ def register(request):
     else:
         form = UserCreationForm()
     return render(request, 'relationship_app/register.html', {'form': form})
+
+@permission_required('relationship_app.can_add_book', raise_exception=True)
+def add_book(request):
+    pass
+@permission_required('relationship_app.can_change_book', raise_exception=True)
+def edit_book(request, pk):
+    pass
+@permission_required('relationship_app.can_delete_book', raise_exception=True)
+def delete_book(request, pk):
+    pass
 
 def  list_books(request):
     qs = Book.objects.all()
