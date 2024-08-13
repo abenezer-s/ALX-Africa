@@ -11,8 +11,8 @@ urlpatterns = [
     path('logout/', LogoutView.as_view(template_name='relationship_app/logout.html'), name='logout'),
     path('register/', views.register , name='register-view'),
     path('books/', list_books, name='book-view'),
-    path('library/', LibraryDetailView.as_view, name='library-details')
+    path('library/', LibraryDetailView.as_view, name='library-details'),
+    path('admin/', views.admin_view, name='admin-view'),
+    path('librarian/', views.librarian_view, name='librarian-view'),
+    path('member/', views.member_view, name='admin-view' )
 ]
-
-LoginView.as_view(template_name="") #checker
-LogoutView.as_view(template_name="") #checker
