@@ -5,6 +5,6 @@ qs = Book.objects.filter(author__name="george orwell")
 books = Book.objects.all()
 books.all() #checker
 #Retrieve the librarian for a library.
-library = Library.objects.get(name= library_name)
+library = Library.objects.get(name=library_name)
 librarian_name = library.librarian.name
 
