@@ -1,11 +1,17 @@
+from django.views.generic import DetailView
 from django.shortcuts import render
 from .models import Book
 
 # Create your views here.
+
 def book_view(request):
     qs = Book.objects.all()
     context = {
-        'querset' = qs
+        'books' : qs
     }
 
     return render(request, 'list_books.html',context)
+
+class Books_view(DetailView):
+
+    template_name = library_detail.html
