@@ -15,20 +15,20 @@ def is_admin(user):
     return user.userprofile.role == 'Admin'
 @user_passes_test(is_admin)
 def admin_view(request):
-    return HttpResponse('admin')
+    return render(request, 'relationship_app/admin_view.html')
 
 def is_librarian(user):
     return user.userprofile.role == 'Librarian'
 @user_passes_test(is_librarian)
 def librarian_view(request):
-        return HttpResponse('librarian')
-
+    return render(request, 'relationship_app/librarian_view.html')
 
 def is_member(user):
     return user.userprofile.role == 'Member'
 @user_passes_test(is_member)
 def member_view(request):
-    return HttpResponse('member')
+    return render(request, 'relationship_app/member_view.html')
+
 
 
 def login_view(request):
