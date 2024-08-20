@@ -5,8 +5,8 @@ from .forms import BookForm
 
 @permission_required('book_shelf.can_view', raise_exception=True)
 def book_list(request):
-    objects = Book.objects.all()
-    return render(request, 'list_template.html', {'objects': objects})
+    books = Book.objects.all()
+    return render(request, 'list_template.html', {'objects': books})
 
 @permission_required('book_shelf.can_edit', raise_exception=True)
 def edit_view(request, pk):
