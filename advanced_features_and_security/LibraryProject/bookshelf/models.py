@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from django.contrib.auth.models import BaseUserManager
+from django.contrib.auth.models import BaseUserManager, Group
+
 
 # Create your models here.
 class CustomUserManager(BaseUserManager):
@@ -29,9 +30,19 @@ class Book(models.Model):
     author = models.CharField(max_length=100)
     publication_year = models.DecimalField(max_digits=4, decimal_places=0)
 
+    class Meta:
+        permissions = [
+            ("can_view","Can View"),
+            ("can_create", "Can Create"),
+            ("can_edit", "Can Edit"),
+            ("can_delete", "Can Delete"),
+        ]
 class CustomUser(AbstractUser):
     date_of_birth = models.DateField()
     profile_photo = models.ImageField(upload_to='images')
     objects = CustomUserManager()
 
 
+editors = Group.objects.create(name="Editor Group")
+viewers =  Group.objects.create(name="Viewer Group")
+admin =  Group.objects.create(name="Admin Group")
