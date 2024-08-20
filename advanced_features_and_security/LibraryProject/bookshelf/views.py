@@ -3,12 +3,12 @@ from django.contrib.auth.decorators import permission_required
 from .models import Book
 from .forms import BookForm
 
-@permission_required
-def list_view(request):
+@permission_required('book_shelf.can_view', raise_exception=True)
+def book_list(request):
     objects = Book.objects.all()
     return render(request, 'list_template.html', {'objects': objects})
 
-@permission_required
+@permission_required('book_shelf.can_edit', raise_exception=True)
 def edit_view(request, pk):
     obj = get_object_or_404(Book, pk=pk)
     if request.method == 'POST':
@@ -20,6 +20,7 @@ def edit_view(request, pk):
         form = BookForm(instance=obj)
     return render(request, 'edit_template.html', {'form': form})
 
+@permission_required('book_shelf.can_update', raise_exception=True)
 def update_view(request, pk):
     obj = get_object_or_404(Book, pk=pk)
     if request.method == 'POST':
@@ -29,6 +30,7 @@ def update_view(request, pk):
             return redirect('list_view')
     return redirect('edit_view', pk=pk)
 
+@permission_required('book_shelf.can_delete', raise_exception=True)
 def delete_view(request, pk):
     obj = get_object_or_404(Book, pk=pk)
     if request.method == 'POST':
