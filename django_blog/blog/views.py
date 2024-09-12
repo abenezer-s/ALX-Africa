@@ -46,6 +46,16 @@ def profile(request):
         u_form = UserUpdateForm(instance=request.user)
     return render(request, 'blog/profile.html', {'u_form': u_form})
 
+def search(request):
+    query = request.GET.get('q')
+    results = Post.objects.filter(
+        Q(title__icontains=query) | 
+        Q(content__icontains=query) | 
+        Q(tags__name__icontains=query)
+    ).distinct()
+    return render(request, 'search_results.html', {'results': results})
+    
+
 class PostListView(ListView):
     model = Post
     template_name = 'blog/post_list.html'
