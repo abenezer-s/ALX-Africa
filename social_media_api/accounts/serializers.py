@@ -3,18 +3,18 @@ from rest_framework.authtoken.models import Token
 from django.contrib.auth import get_user_model
 
 # Import your custom user model
-CustomUser = get_user_model()
+#CustomUser = get_user_model()
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
 
     class Meta:
-        model = CustomUser
+        model = get_user_model()
         fields = ['username', 'email', 'password', 'bio', 'profile_picture']
 
     def create(self, validated_data):
         # Create the user using the create_user method
-        user = CustomUser.objects.create_user(
+        user = get_user_model().objects.create_user(
             username=validated_data['username'],
             email=validated_data['email'],
             password=validated_data['password'],
@@ -24,6 +24,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         
         # Create a token for the new user
         Token.objects.create(user=user)
+
         
         return user
 
