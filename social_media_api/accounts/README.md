@@ -16,3 +16,30 @@ The project defines a custom user model, `CustomUser`, which extends Django’s 
 
 - **`followers`**: A self-referencing `ManyToManyField` with `symmetrical=False`, which allows users to follow other users without requiring the follow to be mutual. This field creates a relationship between users and is stored in the database without enforcing a reciprocal relationship.
 
+# Post and Comment API Documentation
+
+## Overview
+
+This project implements a basic API where users can create, read, update, and delete posts and comments. The API includes models for `Post` and `Comment`, serialization logic, CRUD views, and additional enhancements like pagination and filtering.
+
+## Step-by-Step Breakdown
+
+### 1. Post and Comment Models
+
+Two models, `Post` and `Comment`, were created in a new app called `posts`.
+
+- **Post Model**: Represents a blog post with fields like:
+  - `author`: ForeignKey to the `User` model.
+  - `title`: Title of the post.
+  - `content`: Body of the post.
+  - `created_at`: Timestamp when the post was created.
+  - `updated_at`: Timestamp when the post was last updated.
+
+- **Comment Model**: Represents comments on posts with fields like:
+  - `post`: ForeignKey to the `Post` model.
+  - `author`: ForeignKey to the `User` model.
+  - `content`: Body of the comment.
+  - `created_at`: Timestamp when the comment was created.
+  - `updated_at`: Timestamp when the comment was last updated.
+
+```python
