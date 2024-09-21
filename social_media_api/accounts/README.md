@@ -43,3 +43,26 @@ Two models, `Post` and `Comment`, were created in a new app called `posts`.
   - `updated_at`: Timestamp when the comment was last updated.
 
 ```python
+
+# Follow and Feed Features
+
+## Overview
+
+This update adds functionality for user follow relationships and a personalized content feed. Users can follow or unfollow others, and view a feed that displays posts from the users they follow.
+
+### 1. Follow Management Endpoints
+
+#### Follow a User
+- **URL**: `/follow/<int:user_id>/`
+- **Method**: `POST`
+- **Description**: Allows a user to follow another user.
+- **Permissions**: Authenticated users only.
+
+**Example Request**:
+```bash
+POST /follow/3/
+Headers: Authorization: Token <user_token>
+
+POST /unfollow/3/
+Headers: Authorization: Token <user_token>
+
