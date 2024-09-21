@@ -50,3 +50,13 @@ def unfollow_user(request, user_id):
     request.user.following.remove(user_to_unfollow)
     return Response({"detail": f"You have unfollowed {user_to_unfollow.username}"}, status=status.HTTP_200_OK)
 
+
+
+
+
+
+
+
+
+
+#generics.GenericAPIView, permissions.IsAuthenticated, CustomUser.objects.all()
