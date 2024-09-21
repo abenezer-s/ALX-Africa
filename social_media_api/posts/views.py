@@ -29,9 +29,9 @@ class CommentViewSet(viewsets.ModelViewSet):
 @permission_classes([IsAuthenticated])
 def user_feed(request):
     # Get all the users that the current user is following
-    followed_users = request.user.following.all()
+    following_users = request.user.following.all()
     # Get posts from these followed users, ordered by creation date
-    posts = Post.objects.filter(author__in=followed_users).order_by('-created_at')
+    posts = Post.objects.filter(author__in=following_users).order_by('-created_at')
     serialized_posts = PostSerializer(posts, many=True)
     
     return Response(serialized_posts.data)
