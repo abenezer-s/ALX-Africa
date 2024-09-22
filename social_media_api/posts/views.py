@@ -11,6 +11,7 @@ from .models import Post, Like
 from notifications.models import Notification
 from django.contrib.contenttypes.models import ContentType
 
+
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all().order_by('-created_at')
     serializer_class = PostSerializer
@@ -40,13 +41,17 @@ def user_feed(request):
     
     return Response(serialized_posts.data)
 
+
 @login_required
 def like_post(request, pk):
+    # Get the post or return 404 if not found
     post = get_object_or_404(Post, pk=pk)
-    like, created = Like.objects.get_or_create(post=post, user=request.user)
+    
+    # Create or get the Like object
+    like, created = Like.objects.get_or_create(user=request.user, post=post)
     
     if created:
-        # Create a notification for the post author
+        # If a like was created, generate a notification for the post's author
         Notification.objects.create(
             recipient=post.author,
             actor=request.user,
@@ -56,14 +61,19 @@ def like_post(request, pk):
             target_object_id=post.pk
         )
     
+    # Redirect the user back to the post detail view (or wherever necessary)
     return redirect('post_detail', pk=pk)
 
 @login_required
 def unlike_post(request, pk):
+    # Get the post or return 404 if not found
     post = get_object_or_404(Post, pk=pk)
-    like = Like.objects.filter(post=post, user=request.user).first()
+    
+    # Check if the user has already liked the post, if so, delete the like
+    like = Like.objects.filter(user=request.user, post=post).first()
     
     if like:
-        like.delete()
-
+        like.delete()  # Delete the like if it exists
+    
+    # Redirect the user back to the post detail view (or wherever necessary)
     return redirect('post_detail', pk=pk)
