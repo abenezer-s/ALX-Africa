@@ -77,3 +77,6 @@ def unlike_post(request, pk):
     
     # Redirect the user back to the post detail view (or wherever necessary)
     return redirect('post_detail', pk=pk)
+
+
+# "generics.get_object_or_404(Post, pk=pk)" ?
