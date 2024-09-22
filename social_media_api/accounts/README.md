@@ -66,3 +66,97 @@ Headers: Authorization: Token <user_token>
 POST /unfollow/3/
 Headers: Authorization: Token <user_token>
 
+# Social Media API Documentation
+
+## Features:
+- Like and Unlike posts
+- Notification system for interactions (likes, comments, new followers, etc.)
+
+---
+
+## API Endpoints
+
+### **1. Like and Unlike Posts**
+
+#### **Like a Post**
+- **Endpoint:** `POST /posts/<int:pk>/like/`
+- **Description:** Allows an authenticated user to like a post.
+- **Request:**
+    ```json
+    {
+      "Authorization": "Bearer <token>"
+    }
+    ```
+- **Response:**
+    - `201 Created`: The post has been liked.
+    - `400 Bad Request`: User has already liked the post.
+    ```json
+    {
+      "message": "You have already liked this post."
+    }
+    ```
+
+#### **Unlike a Post**
+- **Endpoint:** `POST /posts/<int:pk>/unlike/`
+- **Description:** Allows an authenticated user to unlike a post.
+- **Request:**
+    ```json
+    {
+      "Authorization": "Bearer <token>"
+    }
+    ```
+- **Response:**
+    - `200 OK`: The post has been unliked.
+    - `404 Not Found`: User hasn't liked the post before.
+    ```json
+    {
+      "message": "You haven't liked this post."
+    }
+    ```
+
+---
+
+### **2. Notifications**
+
+#### **Get Notifications**
+- **Endpoint:** `GET /notifications/`
+- **Description:** Retrieves the unread notifications for the authenticated user.
+- **Request:**
+    ```json
+    {
+      "Authorization": "Bearer <token>"
+    }
+    ```
+- **Response:**
+    - `200 OK`: Returns a list of unread notifications.
+    ```json
+    [
+      {
+        "id": 1,
+        "actor": "user123",
+        "verb": "liked your post",
+        "target": "Post #12",
+        "timestamp": "2024-09-22T12:34:56",
+        "is_read": false
+      }
+    ]
+    ```
+
+#### **Mark Notification as Read**
+- **Endpoint:** `POST /notifications/<int:notification_id>/read/`
+- **Description:** Marks the specified notification as read.
+- **Request:**
+    ```json
+    {
+      "Authorization": "Bearer <token>"
+    }
+    ```
+- **Response:**
+    - `200 OK`: Notification marked as read.
+    ```json
+    {
+      "message": "Notification marked as read."
+    }
+    ```
+
+---
