@@ -1,8 +1,10 @@
+from decimal import Decimal
 from django.db import models
 from module.models import Module
+from django.db import IntegrityError
 from django.contrib.auth.models import User
-from course.models import Course
-from program.models import Program
+from rest_framework.response import Response
+from rest_framework import status
 
 # Create your models here.
 class Quiz(models.Model):
@@ -16,6 +18,44 @@ class Quiz(models.Model):
     pass_score = models.DecimalField(default=50, blank=True, max_digits=3, decimal_places=0)
     num_of_questions = models.DecimalField(max_digits=3, decimal_places=0, default=0)
     created_at = models.DateField(blank=True, default=None)
+
+    @classmethod
+    def create_quiz(cls, module_id, serializer, date, user):
+        if serializer.is_valid():
+            description = serializer.validated_data['description']
+            pass_score = serializer.validated_data['pass_score']
+            name = serializer.validated_data['name']
+
+            try:
+                module = Module.objects.get(id=module_id)
+            except Module.DoesNotExist:
+                return Response({"error": "module does not exist"},
+                                status=status.HTTP_404_NOT_FOUND)
+            
+            if module.owner == user: 
+                try:
+                    Quiz.objects.create(owner=user, 
+                                    module=module, 
+                                    name=name,
+                                    description=description,
+                                    pass_score=pass_score, 
+                                    created_at=date)  
+                except IntegrityError:
+                    return Response({"error":"quiz with that name exists"})
+                
+                num_quizs = module.num_quizs
+                num_quizs += Decimal(1)
+                module.num_quizs = num_quizs
+                module.save()
+                return Response({"message": "quiz created succesfully"},
+                                status=status.HTTP_200_OK)
+            else:
+                return Response({"error": "you do not have permission to perform this action"},
+                                status=status.HTTP_403_FORBIDDEN)
+        else:
+            return Response({"error": serializer.errors},
+                            status=status.HTTP_400_BAD_REQUEST)
+        
     
 class  Question(models.Model):
     """

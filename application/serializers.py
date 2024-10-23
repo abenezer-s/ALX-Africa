@@ -13,7 +13,7 @@ class ApplicationResponseCourseSerializer(serializers.Serializer):
     
     response = serializers.CharField()
     class Meta:
-        model = Application
+        model = CourseApplication
         fields = [
             'owner' ,
             'learner' ,
@@ -29,7 +29,7 @@ class ApplicationResponseCourseSerializer(serializers.Serializer):
 class ApplicationResponseProgramSerializer(serializers.Serializer):
     response = serializers.CharField()
     class Meta:
-        model = Application
+        model = ProgramApplication
         fields = [
             'owner' ,
             'learner' ,
@@ -42,7 +42,12 @@ class ApplicationResponseProgramSerializer(serializers.Serializer):
 
         read_only_field = ['owner', 'learner','submitted_at', 'program', 'state']
 
-class ApplicationSerialzer(serializers.ModelSerializer):
+class ProgramApplicationSerialzer(serializers.ModelSerializer):
     class Meta:
-        model = Application
+        model = ProgramApplication
+        fields = '__all__'
+
+class CourseApplicationSerialzer(serializers.ModelSerializer):
+    class Meta:
+        model = CourseApplication
         fields = '__all__'

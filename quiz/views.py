@@ -1,20 +1,16 @@
 from datetime import datetime
-from django.db import IntegrityError
 from django.db.models import Q
 from rest_framework.exceptions import PermissionDenied
-from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
+from rest_framework.permissions import IsAuthenticated
 from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from permissions import IsContentCreator, IsLearner
+from permissions import IsContentCreator
 from .models import *
-from users.models import CourseEnrollment, ProgramEnrollment, UserProfile
 from .serializers import *
 from decimal import Decimal
-from rest_framework.parsers import MultiPartParser, FormParser
 from quiz.models import Grade
-from application.serializers import ApplicationSerialzer
-from module.views import isEnrolledOrOwner
+from utils import enrolled_owner
 
 # Create your views here.
 class QuizDetailAPIView(generics.RetrieveAPIView):
@@ -27,7 +23,8 @@ class QuizDetailAPIView(generics.RetrieveAPIView):
         
         quiz = self.get_object()
         module = quiz.module
-        respone = isEnrolledOrOwner(module, request, 'quiz')
+        user = request.user
+        respone = enrolled_owner(module, user, 'quiz')
         
         #grant access if enrolled to either the course or the program or user owns the moudle
         if respone.data['message'] == 'Allowed':
@@ -46,40 +43,10 @@ class QuizCreateAPIView(generics.CreateAPIView):
     def create(self, request, module_id, *args, **kwargs):
         date = datetime.now()
         serializer = self.get_serializer(data=request.data)
-        if serializer.is_valid():
-            description = serializer.validated_data['description']
-            pass_score = serializer.validated_data['pass_score']
-            name = serializer.validated_data['name']
-
-            try:
-                module = Module.objects.get(id=module_id)
-            except Module.DoesNotExist:
-                return Response({"error": "module does not exist"},
-                                status=status.HTTP_404_NOT_FOUND)
-            
-            if module.owner == self.request.user: 
-                try:
-                    Quiz.objects.create(owner=self.request.user, 
-                                    module=module, 
-                                    name=name,
-                                    description=description,
-                                    pass_score=pass_score, 
-                                    created_at=date)  
-                except IntegrityError:
-                    return Response({"error":"quiz with that name exists"})
-                
-                num_quizs = module.num_quizs
-                num_quizs += Decimal(1)
-                module.num_quizs = num_quizs
-                module.save()
-                return Response({"message": "quiz created succesfully"},
-                                status=status.HTTP_200_OK)
-            else:
-                return Response({"error": "you do not have permission to perform this action"},
-                                status=status.HTTP_403_FORBIDDEN)
-        else:
-            return Response({"error": serializer.errors},
-                            status=status.HTTP_400_BAD_REQUEST)
+        date_today = date.today()
+        user = request.user
+        response = Quiz.create_quiz(module_id, serializer, date_today, user)
+        return response
         
 
 class QuizListAPIView(generics.ListAPIView):
@@ -186,7 +153,8 @@ class QuestionDetailAPIView(generics.RetrieveAPIView):
         question = self.get_object()
         quiz = question.quiz
         module = quiz.module
-        respone = isEnrolledOrOwner(module, request, 'question')
+        user = request.user
+        respone = enrolled_owner(module, user, 'question')
         
         #grant access if enrolled to either the course or the program or user owns the moudle
         if respone.data['message'] == 'Allowed':
@@ -290,7 +258,8 @@ class AnswerDetailAPIView(generics.RetrieveAPIView):
         question = answer.question
         quiz = question.quiz
         module = quiz.module
-        respone = isEnrolledOrOwner(module, request, 'answer')
+        user = request.user
+        respone = enrolled_owner(module, user, 'answer')
         
         #grant access if enrolled to either the course or the program or user owns the moudle
         if respone.data['message'] == 'Allowed':
@@ -336,13 +305,7 @@ class AnswerUpdateAPIView(generics.UpdateAPIView):
                             status=status.HTTP_200_OK)
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    #def put(self, request, pk):
-    #       instance = MyModel.objects.get(pk=pk)
-    #       serializer = MyModelSerializer(instance, data=request.data)
-    #       if serializer.is_valid():
-    #           serializer.save()
-    #           return Response({'message': 'Update successful'}, status=status.HTTP_200_OK)
-    #       return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
 class AnswerDestroyAPIView(generics.DestroyAPIView):
     queryset = Answer.objects.all()
     serializer_class = AnswerSerializer
@@ -378,7 +341,8 @@ class SubmitAnswersAPIView(APIView):
                             status=status.HTTP_404_NOT_FOUND)
         
         module = quiz.module
-        response = isEnrolledOrOwner(module, request, "quiz")
+        user = request.user
+        response = enrolled_owner(module, user, "quiz")
         
         #check if user is the actual learner and is enrolled or owns the module
         if response.data['message'] == 'Allowed'  and (learner == request.user) and response.data['course_enrl']:

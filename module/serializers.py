@@ -19,7 +19,7 @@ class MediaSerialzer(serializers.ModelSerializer):
             'description',
 
         ]
-    read_only_fields = ['owner', 'name']
+    read_only_fields = ['owner']
 
 
 #class AddMediaSerializer(serializers.Serializer):

@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-*b5@sd#s*sfvc*e4+gix5#w)9#9(2z5j!2bs-p+f5jm%m!^p(^
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -90,7 +90,7 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'e_learingDB',
+        'NAME': 'e_learningDB',
         'USER': 'elearning_user',
         'PASSWORD': 'password',
         'HOST': 'localhost',

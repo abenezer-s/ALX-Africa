@@ -1,5 +1,4 @@
 from django.shortcuts import render
-from django.db.models import Q
 from datetime import datetime
 from django.shortcuts import redirect
 from django_filters.rest_framework import DjangoFilterBackend
@@ -11,45 +10,19 @@ from rest_framework.views import APIView
 from permissions import IsContentCreator
 from .models import *
 from .serializers import *
-from decimal import Decimal
+
 
 # Create your views here.
 class AddCourseAPIView(APIView):
    """
-   Providing course and program id, 
-   add course to the program if user owns both the course and the program
+   Add course to program if user owns both the course and the program.
    """
    permission_classes = [IsContentCreator]
 
    def put(self, request, program_id, course_id):  
-       
-        try:
-            course = Course.objects.get(id=course_id)
-        except (Course.DoesNotExist):
-            return Response({"error": "Course not found"}, status=status.HTTP_404_NOT_FOUND)
-        try:
-            program = Program.objects.get(id=program_id)
-        except Program.DoesNotExist:
-            return Response({"error": "program not found"}, status=status.HTTP_404_NOT_FOUND)
-        
-        #check if course has already been added before adding
-        contains = Program.objects.filter(Q(courses__id=course_id) & Q(id=program_id)).exists()
-        if contains:
-            return Response({"error": "Course has already been added"},
-                            status=status.HTTP_400_BAD_REQUEST) 
-        
-        if course.owner == program.owner == request.user:   
-            program.courses.add(course)
-            num_courses = program.number_of_courses #update number of courses field to reflect chnage
-            num_courses += Decimal(1)
-            program.number_of_courses = num_courses
-            program.save()
-            return Response({"message": "course successfully added to program."},
-                            status=status.HTTP_200_OK)
-        else:
-            return Response({"error": "you do not have permission to perform this action"},
-                            status=status.HTTP_403_FORBIDDEN)
-        
+        user = request.user
+        response = Program.add_course(program_id, course_id, user)
+        return response
 
 class ProgramDetailAPIView(generics.RetrieveAPIView):
     queryset = Program.objects.all()
