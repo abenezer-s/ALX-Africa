@@ -9,7 +9,7 @@ class ApplyProgramSerializer(serializers.Serializer):
     
     motivation_letter = serializers.CharField()
 
-class ApplicationResponseCourseSerializer(serializers.Serializer):
+class ResponseCourseSerializer(serializers.Serializer):
     
     response = serializers.CharField()
     class Meta:
@@ -26,7 +26,7 @@ class ApplicationResponseCourseSerializer(serializers.Serializer):
 
         read_only_field = ['owner', 'learner','submitted_at', 'course', 'state']
 
-class ApplicationResponseProgramSerializer(serializers.Serializer):
+class ResponseProgramSerializer(serializers.Serializer):
     response = serializers.CharField()
     class Meta:
         model = ProgramApplication

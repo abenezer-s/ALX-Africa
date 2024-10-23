@@ -9,12 +9,12 @@ from permissions import IsContentCreator, IsLearner
 from .models import *
 from .serializers import *
 from application.serializers import (ProgramApplicationSerialzer,
-                                     CourseApplicationSerialzer, 
-                                    ApplicationResponseCourseSerializer, 
-                                    ApplicationResponseProgramSerializer)
+                                    CourseApplicationSerialzer, 
+                                    ResponseCourseSerializer, 
+                                    ResponseProgramSerializer)
 
 # Create your views here.
-class ApplicationResponseCourse(APIView):
+class ResponseCourse(APIView):
     """
     Given course id, learner's id and a response(accept/reject), 
     rejects or accepts application if it exists.
@@ -23,7 +23,7 @@ class ApplicationResponseCourse(APIView):
 
     def post(self, request, learner_id, course_id):
         date = datetime.now()
-        serializer = ApplicationResponseCourseSerializer(data=request.data)
+        serializer = ResponseCourseSerializer(data=request.data)
         if serializer.is_valid():
             response = serializer.validated_data['response']
             if response.lower() not in ['accept', 'reject'] :
@@ -40,7 +40,7 @@ class ApplicationResponseCourse(APIView):
             return Response(serializer.errors,
                             status=status.HTTP_400_BAD_REQUEST)
 
-class ApplicationResponseProgram(APIView):
+class ResponseProgram(APIView):
     """
     Given program id, learner's id and a response(accept/reject), 
     rejects or accepts application if it exists.
@@ -49,7 +49,7 @@ class ApplicationResponseProgram(APIView):
     
     def post(self, request, program_id, learner_id):
         date = datetime.now()
-        serializer = ApplicationResponseProgramSerializer(data=request.data)
+        serializer = ResponseProgramSerializer(data=request.data)
         if serializer.is_valid():
             
             response = serializer.validated_data['response']
@@ -78,7 +78,7 @@ class ApplyCourse(APIView):
         date = datetime.now()
         serializer = ApplyCourseSerializer(data=request.data)
         user = request.user
-        response = CourseApplication.apply(course_id, learner_id, user, serializer, date)
+        response = CourseApplication.apply(user, course_id, learner_id, serializer, date)
 
         return response
     
@@ -91,7 +91,8 @@ class ApplyProgram(APIView):
     def post(self, request, program_id, learner_id):
         date = datetime.now()
         serializer = ApplyProgramSerializer(data=request.data)
-        response = ProgramApplication.apply(program_id, learner_id, serializer, date)
+        user = request.user
+        response = ProgramApplication.apply(user, program_id, learner_id, serializer, date)
         
         return response
     

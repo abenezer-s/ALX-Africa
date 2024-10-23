@@ -47,27 +47,29 @@ def create_response(user_profile, in_course, in_program, user, module_owner, obj
     if in_course or in_program or (module_owner == user):
         if in_course:
             return Response({"message": "Allowed",
-                             "course_enrl": True})
+                             "enrl": True})
         elif in_program:
             return Response({"message": "Allowed",
-                             "course_enrl": False})
+                             "enrl": True})
         else:
             return Response({"message": "Allowed",
-                             "course_enrl": False})
+                             "enrl": False})
     else:    
         if user_profile.creator:
             message = f"Access Denied. You do not own the course or program this {obj} belongs to."
-            return Response({"error": message})
+            return Response({"error": message,
+                             "message":False})
         
         message = f"You are not enrolled. Can not access this {obj}."  
-        return Response({"error": message})
+        return Response({"error": message,
+                         "message":False})
 
 def enrolled_owner(module, user, obj):
         """
         A helper function to determine whether a user owns or,
         is enrolled in a program or a course the module belongs to.
         returns "Allowed" for 'message' field if so.
-        returns "True" for 'course_enrl' field if enrolled in course.
+        returns "True" for 'enrl' field if enrolled in course or program.
         returns error messages otherwise.
         """
         module_owner = module.owner

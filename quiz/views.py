@@ -328,85 +328,17 @@ class SubmitAnswersAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, quiz_id, learner_id):
-        
-        try:
-            quiz = Quiz.objects.get(id=quiz_id)
-        except (Quiz.DoesNotExist):
-            return Response({"error": "Quiz not found"},
-                             status=status.HTTP_404_NOT_FOUND)
-        try:
-            learner = User.objects.get(id=learner_id)
-        except User.DoesNotExist:
-            return Response({"error": "learner not found"}, 
-                            status=status.HTTP_404_NOT_FOUND)
-        
-        module = quiz.module
-        user = request.user
-        response = enrolled_owner(module, user, "quiz")
-        
-        #check if user is the actual learner and is enrolled or owns the module
-        if response.data['message'] == 'Allowed'  and (learner == request.user) and response.data['course_enrl']:
-            # Assume the request data contains the answers for each question
-            answers = request.data.get('answers', [])
-            correct_count = 0
-            questions_count = quiz.num_of_questions
-
-            #check answers' validity
-            for answer_data in answers:
-                try:
-                    question = Question.objects.get(id=answer_data['question_id'])
-                except Question.DoesNotExist:
-                    continue  # Skip if the question does not exist
-
-                submitted_ans = answer_data['submitted_ans']
-                is_correct = (submitted_ans == question.answer)
-
-                # Save the learner's answer
-                LearnerAnswer.objects.create(learner=learner,
-                                            question=question,
-                                            answer=submitted_ans,
-                                            correct=is_correct)
-
-                if is_correct:
-                    correct_count += 1
-
-            # Calculate the grade percentage
-            grade = round(float(correct_count) / float(questions_count), 2) * 100 if questions_count > 0 else 0
-            #check if previously attempted and if score is better create a new one and delete old 
-            try:
-                instance = Grade.objects.get(Q(learner=learner) & Q(quiz=quiz))
-            except Grade.DoesNotExist:
-                pass
-            else:
-                prev_grade = instance.grade
-                if grade <= prev_grade:
-                    return  Response({"error":"current grade not an improvement."},
-                                     status=status.HTTP_200_OK)
-                else:
-                    instance.delete()
-                    
-            if grade >= quiz.pass_score:
-                #update grade records pass
-                Grade.objects.create(module=module, 
-                                    quiz=quiz, 
-                                    learner=learner,
-                                    grade=grade, 
-                                    passed=True)
-            else:
-                #update grade records fail
-                Grade.objects.create(module=module, 
-                                     quiz=quiz, 
-                                     learner=learner,
-                                     grade=grade, 
-                                     passed=False)
-
-            return Response({
-                "learner": learner.first_name,
-                "correct_answers": correct_count,
-                "total_questions": questions_count,
-                "grade": grade
-            }, status=status.HTTP_200_OK)
-        else:
-            return  Response({
-                "message":"can not perform this action."
-            }, status=status.HTTP_403_FORBIDDEN)
+        #validate
+        response = Answer.validate(learner_id, quiz_id, request)
+        if response.data['error']:
+            return response
+        learner = response.data['learner']
+        answers = response.data['answers']
+        module = response.data['module']
+        quiz = response.data['quiz']
+        questions_count = response.data['questions_count']
+        #calculate score
+        grade = Answer.score_answers(answers, learner, questions_count)
+        #regitser grade
+        response = Grade.register_grade(grade, module,learner, quiz)
+        return response
