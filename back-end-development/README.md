@@ -1,9 +1,9 @@
 # Backend Web Development
 
-Welcome to my ALX Bootcamp Backend Web Development journey! In this repository, I will be showcasing the skills, tools, and projects I’ve worked on throughout the program, which has deepened my understanding of backend web development.
+Welcome to my ALX Africa Backend Web Development programme repository! Here, I will be showcasing the skills, tools, and projects I’ve worked on throughout the program, which has deepened my understanding of backend web development.
 
 ### Skills Acquired
-During the bootcamp, I learned a variety of backend technologies and concepts that have strengthened my understanding of building scalable and efficient web applications. Below is a summary of the skills I have acquired:
+During the programme, I learned a variety of backend technologies and concepts that have strengthened my understanding of building scalable and efficient web applications. Below is a summary of the skills I have acquired:
 
 - **Django**: Mastered Django framework for building robust web applications with Python.
 - **RESTful APIs**: Developed and consumed RESTful APIs, applying the principles of HTTP methods, status codes, and request/response structures.
@@ -27,7 +27,7 @@ For my final project during my time at ALX, I developed an **E-Learning API** to
 
 If you would like to get in touch or have any questions, feel free to connect with me via:
 
-- **GitHub**: [github.com/abenezer-s](https://github.com/your-username)
+- **GitHub**: [github.com/abenezer-s](https://github.com/abenezer-s)
 - **LinkedIn**: [linkedin.com/in/abenezer-sisay](https://linkedin.com/in/abenezer-sisay)
 - **Email**: abenezersisay7@gmail.com
 
